@@ -24,9 +24,9 @@
       <hr>
       <div class="row titleEnv">
           <div class="col-lg-2 text-center">Courses id</div>
-          <div class="col-lg-5 text-center">Courses name</div>
+          <div class="col-lg-4 text-center">Courses name</div>
           <div class="col-lg-3 text-center">Professor</div>
-          <div class="col-lg-2 text-center">Student number</div>
+          <div class="col-lg-3 text-center">State</div>
         </div>
         <div id="coursesBlock">
 
@@ -48,9 +48,9 @@ function GetCourse(){
     for(i in LIST){
         innerhtml += '<div class="row blockEnv" onclick="VisitCourse(\''+LIST[i].courseid+'\')">';
         innerhtml += '<div class="col-lg-2 text-center">'+LIST[i].courseid+'</div>';
-        innerhtml += '<div class="col-lg-5 text-center">'+LIST[i].coursename+'</div>';
+        innerhtml += '<div class="col-lg-4 text-center">'+LIST[i].coursename+'</div>';
         innerhtml += '<div class="col-lg-3 text-center">'+LIST[i].professor+'</div>';
-        innerhtml += '<div class="col-lg-2 text-center">'+LIST[i].number+'</div>';
+        innerhtml += '<div class="col-lg-3 text-center">'+LIST[i].state+'</div>';
         innerhtml += '</div>';
       }
       document.getElementById("coursesBlock").innerHTML = innerhtml;

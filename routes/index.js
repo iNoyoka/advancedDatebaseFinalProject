@@ -4,6 +4,34 @@ var router = express.Router();
 //================================================
 // Temporary Variable
 
+var neo4j = require('neo4j-driver');
+const driver = new neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "as123512"));
+var session = driver.session();
+
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : 'as123512',
+  database : 'project'
+});
+ 
+connection.connect();
+
+/*
+session
+	.run('match (a:Author) --> (c:Course) match (c) --> (p:Provider)where c.Title=~ "(?i).*machine learning.*" return c.Title AS title, a.Name AS name, p.School AS school')
+	.then(result => {
+		result.records.forEach(function (record) {
+      console.log(record.get('title'));
+    });
+    session.close();
+	})
+	.catch(error => {
+		console.log(error);
+	})
+*/
+
 var studentList = [];
 var objSuper = {
   studentid: "superaccount",
@@ -12,20 +40,13 @@ var objSuper = {
 };
 studentList.push(objSuper);
 
-
-
-var courseList = [];
-courseList.push({courseid:"1",coursename:"Chinese",professor:"A",number:3});
-courseList.push({courseid:"2",coursename:"Chinese Alpha",professor:"B",number:28});
-courseList.push({courseid:"3",coursename:"Chinese Beta",professor:"C",number:77});
-courseList.push({courseid:"4",coursename:"English",professor:"A",number:23});
-courseList.push({courseid:"5",coursename:"Math",professor:"C",number:11});
-
 var forumList = [];
 forumList.push({id:1,studentid:"alpha",courseid:"1",content:"ADB is trash",viewable:true});
 forumList.push({id:2,studentid:"beta",courseid:"1",content:"ADB is good",viewable:true});
 forumList.push({id:3,studentid:"gamma",courseid:"1",content:"ADB is... uh, hard to say",viewable:true});
 forumList.push({id:4,studentid:"theta",courseid:"1",content:"ADB is .. hmm well, you know",viewable:true});
+
+
 //================================================
 
 //================================================
@@ -94,28 +115,57 @@ router.get('/home/personalPage',function(req,res,next){
 router.post('/home/searchCourses',function(req,res,next){
   var keywords = req.body.keywords;
   var showlist = [];
-  for(i in courseList){
-    if(courseList[i].coursename.includes(keywords) || courseList[i].professor.includes(keywords) || courseList[i].courseid==keywords){
-      showlist.push(courseList[i]);
-    }
-  }
-  var LIST = JSON.stringify(showlist);
-  res.send(LIST);
+	//FIND KEYWORDS IN DB
+	/* NEW VERSION
+	session
+		.run()//find courseid coursename professor school
+		.then(result => {
+			result.records.forEach(function (record) {
+				var obj = {
+					courseid: record.get('courseid'),
+					coursename: record.get('coursename'),
+					professor: record.get('professor'),
+					school: record.get('school')
+				}
+				showlist.push(obj);
+			});
+			var LIST = JSON.stringify(showlist);
+			res.send(LIST);
+			session.close();
+		})
+		.catch(error => {
+			console.log(error);
+		})
+	*/
 });
 
 router.post('/home/listPersonalCourse',function(req,res,next){
   var showlist = [];
+	var courselist = [];
   for(i in studentList){
     if(studentList[i].studentid==req.session.name){
-      for(j in courseList){
-        if(studentList[i].studentcourse.includes(courseList[j].courseid)){
-          showlist.push(courseList[j]);
-        }
-      }
+			// use sql to fillout courselist (include courseid, state)
+			// courselist.push(courseid: studentcourse_name,coursename: ,professor: ,state: studentcourse_bool)
+			/* NEW VERSION
+			var j = 0;
+			session
+				.run()//find courseid coursename professor
+				.then(result => {
+					result.records.forEach(function (record) {
+						courselist[j].coursename = record.get('coursename');
+						courselist[j].professor = record.get('professor');
+						j++;
+					});
+					var LIST = JSON.stringify(courselist);
+					res.send(LIST);
+					session.close();
+				})
+				.catch(error => {
+					console.log(error);
+				})
+			*/
     }
   }
-  var LIST = JSON.stringify(showlist);
-  res.send(LIST);
 });
 
 //================================================
@@ -123,6 +173,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 //================================================
 router.get('/course/:courseid',function(req,res,next){
   var courseid = decodeURI(req.params.courseid);
+	//
   for(i in courseList){
     if(courseList[i].courseid==courseid){
       for(j in studentList){
@@ -150,6 +201,7 @@ router.get('/course/:courseid',function(req,res,next){
       break;
     }
   }
+	//
 });
 
 router.post('/course/changePersonalCourse',function(req,res,next){
