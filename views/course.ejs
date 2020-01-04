@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CoursePage - <%= coursename %></title>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <!--w3school-->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
+  <% if(already==1){ %>
+  <body onload="GetForum(<%= courseid %>, '<%= name %>' )">
+  <% }else{ %>
+  <body>
+  <% } %> 
+    <div class="container">
+      <div class="row nav">
+        <div class="col-lg-12"><h1>Hi, <%= name %>. Welcome to home page</h1></div>
+        <div class="col-lg-12"><h4>In home page, you will view course name, professor and forum.</h4></div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-lg-6"></div>
+        <div class="col-lg-2"><a href="/home">Home</a></div>
+        <div class="col-lg-2"><a href="/home/personalPage">personal page</a></div>
+        <div class="col-lg-2"><a href="/logout">logout</a></div>
+      </div>
+      <hr>
+      <div class="row courseTitle">
+        <div class="col-lg-12 text-center"><%= coursename %> - <%= professor %></div>
+      </div>
+      <div class="row fixWidth">
+        <% if(already==1){ %>
+        <div class="col-lg-12 text-right"><button type="button" class="btn btn-danger" onclick="ChangePersonalCourse('drop',<%=courseid%>)">Drop This Course</button></div>
+        <% }else{ %>
+        <div class="col-lg-12 text-right"><button type="button" class="btn btn-success" onclick="ChangePersonalCourse('take',<%=courseid%>)">Take This Course</button></div>
+        <% } %>
+      </div>
+      <div class="row fixWidth">
+        <div class="col-lg-8">
+          <div class="relatedTitle text-center">Forum</div>
+          <% if(already==0){ %>
+          <div class="forum">
+            Sorry, you are not allowed to access the forum. Please make sure you take this course first.
+          </div>
+          <% }else{ %>
+          <div class="forum" id="forum">
+          </div>
+          <textarea class="typecomment" id="comment" rows="5"></textarea>
+          <button onclick="SubmitComment('<%=courseid%>','<%=name%>')">submit</button>
+          <% } %>
+        </div>
+        <div class="col-lg-4">
+          <div class="relatedTitle">Relate Class</div>
+          <div class="relatedCourse">Here will put related class</div>
+          <div class="relatedCourse">Here will put related class</div>
+          <div class="relatedCourse">Here will put related class</div>
+          <div class="relatedCourse">Here will put related class</div>
+          <div class="relatedCourse">Here will put related class</div>
+          <div class="relatedCourse">Here will put related class</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script src="/javascripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+function ChangePersonalCourse(state,courseid){
+  $.ajax({
+    method: 'POST',
+    url: '/course/changePersonalCourse',
+    data:{
+      state: state,
+      courseid: courseid
+    }
+  }).done(function(data){
+    location.reload();
+  });
+}
+function GetForum(courseid,studentid){
+  $.ajax({
+    method: 'POST',
+    url: '/course/getForum',
+    data:{courseid: courseid}
+  }).done(function(data){
+    var LIST = JSON.parse(data);
+    var innerhtml = "";
+    for(i in LIST){
+      innerhtml += '<div class="forumList"><h5>'+LIST[i].content+'</h5><h5 class="text-right" style="color:#A9A9A9"> - '+LIST[i].studentid+'</h5>';
+      if(LIST[i].studentid==studentid){
+        innerhtml += '<h5 class="text-right" style="color:blue;cursor:pointer;" onclick="DeleteComment(\''+LIST[i].id+'\')">delete this comment</h5>';
+      }
+      innerhtml += '</div>';
+    }
+    if(innerhtml==""){
+      innerhtml = "No Comment yet. Create one?";
+    }
+    document.getElementById('forum').innerHTML = innerhtml;
+  });
+}
+function SubmitComment(courseid,studentid){
+  $.ajax({
+    method: 'POST',
+    url: '/course/submitComment',
+    data:{
+      courseid: courseid,
+      studentid: studentid,
+      comment: $('#comment').val()
+    }
+  }).done(function(data){
+    alert("submit success!");
+    location.reload();
+  });
+}
+function DeleteComment(commentid){
+  $.ajax({
+    method: 'POST',
+    url: '/course/deleteComment',
+    data:{
+      commentid: commentid
+    }
+  }).done(function(data){
+    alert("delete success!");
+    location.reload();
+  });
+}
+</script>
+<style>
+.nav{
+  background-color: #DCDCDC;
+  margin: 0.5vh 0;
+  padding: 1vh 0;
+}
+.courseTitle{
+  background-color: black;
+  color: white;
+  padding: 1vh;
+  margin: 1vh;
+}
+.fixWidth{
+  padding: 0 0;
+  margin: 0 0;
+}
+.forum{
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 0px 10px;
+}
+.forumList{
+  margin: 2vh 0px;
+  padding: 10px 10px;
+  background-color: #F0E68C;
+  border-radius: 5px;
+}
+.relatedTitle{
+  background-color: black	;
+  color: white;
+  padding: 1vh;
+  margin: 1vh 0;
+}
+.relatedCourse{
+  background-color: #87CEFA	;
+  padding: 1vh;
+  margin: 1vh 0;
+  cursor: pointer;
+  text-align: center;
+}
+.relatedCourse:hover{
+  background-color: #1E90FF	;
+  transition: 300ms;
+}
+textarea{
+  margin: 1vh;
+  width: 98%;
+}
+</style>
