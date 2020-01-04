@@ -9,14 +9,14 @@ const driver = new neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j
 var session = driver.session();
 
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
+var con = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : 'as123512',
   database : 'project'
 });
  
-connection.connect();
+con.connect();
 
 /*
 session

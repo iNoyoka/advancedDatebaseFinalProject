@@ -4,17 +4,16 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-DROP TABLE IF EXISTS `studentCourse`;
-CREATE TABLE IF NOT EXISTS `studentCourse` (
+DROP TABLE IF EXISTS `studentList`;
+CREATE TABLE IF NOT EXISTS `studentList` (
   `id` int(13) NOT NULL AUTO_INCREMENT,
   `studentid` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `studentcourse_name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `studentcourse_bool` int NOT NULL,
+  `studentpwd` text COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-INSERT INTO `studentCourse` (`id`, `studentid`, `studentcourse_name`, `studentcourse_bool`) VALUES
+INSERT INTO `studentList` (`id`, `studentid`, `studentpwd`) VALUES
 (0, 'user_0', 'bAkmFug9VKi3myks'),
 (1, 'user_1', '2Nq6MUIQ6uiF49'),
 (2, 'user_2', 'eD2BFlcgJ10r4O'),
