@@ -91,7 +91,7 @@ router.post('/registerCheck',function(req,res,next){
 				req.session.name = id;
 				con.query("INSERT INTO `studentList` (`studentid`, `studentpwd`) VALUES ("+id+", "+pwd+")",function(err,result){
 					if(err) console.log(err);
-				}
+				});
 				res.send("Success.");
 			}
 			else{
