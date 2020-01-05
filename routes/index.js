@@ -276,6 +276,7 @@ router.post('/course/changePersonalCourse',function(req,res,next){
 router.post('/course/callprofessor',function(req,res,next){
 	var professor = req.body.professor;
 	var showlist = [];
+	var idlist = [];
 	session
 		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where a.author='"+professor+"' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS `school` ORDER BY toInteger(c.idx) ASC")
 		.then(result => {
