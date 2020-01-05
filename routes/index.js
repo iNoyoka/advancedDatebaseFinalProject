@@ -141,7 +141,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 	var courselist = [];
 	
 	var sql = "SELECT * FROM `studentCourse` WHERE `studentid`='user_1'";
-	con.query(sql,function(err,restult){
+	con.query(sql,function(err,result){
 		if(err){
 			console.log('error occur in "listPersonalCourse"');
 		}else{
