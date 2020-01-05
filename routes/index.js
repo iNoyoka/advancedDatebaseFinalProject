@@ -164,7 +164,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
     if(studentList[i].studentid==req.session.name){
 			// use sql to fillout courselist (include courseid, state)
 			// courselist.push(courseid: studentcourse_name,coursename: ,professor: ,state: studentcourse_bool)
-			/* NEW VERSION
+			
 			var j = 0;
 			session
 				.run()//find courseid coursename professor
@@ -181,7 +181,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 				.catch(error => {
 					console.log(error);
 				})
-			*/
+			
     }
   }
 	*/
