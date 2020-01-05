@@ -171,7 +171,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 					result2.records.forEach(function (record) {
 						console.log(record.get('coursename')+" - "+record.get('professor'));
 						if(anoidlist.includes(record.get('id')){
-							//do nothing
+							console.log('repeat');
 						}
 						else{
 							anoidlist.push(record.get('id'));
