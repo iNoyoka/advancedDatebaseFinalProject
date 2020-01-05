@@ -147,7 +147,7 @@ router.post('/home/searchCourses',function(req,res,next){
 // ALMOST DONE
 router.post('/home/listPersonalCourse',function(req,res,next){
 	var courselist = [];
-	
+	var idlist = [];
 	var sql = "SELECT * FROM `studentCourse` WHERE `studentid`='"+req.session.name+"'";
 	con.query(sql,function(err,result){
 		if(err){
@@ -161,27 +161,29 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 					state: result[i].studentcourse_bool
 				}
 				courselist.push(obj);
+				idlist.push("'"+obj.courseid+"'");
 			}
-			for(i in courselist){
-				session
-					.run("match (c:Course) match (a:Author)-->(c) where c.idx = '"+courselist[i].courseid+"' return distinct c.Title AS `coursename`, a.author AS `professor`")
-					.then(result2 => {
-						courselist[i].coursename = result2.records[0].get('coursename');
-						courselist[i].professor = result2.records[0].get('professor');
-						/*
-						result2.records.forEach(function (record) {
-							console.log(record.get('coursename'));
-							console.log(record.get('professor'));
-						});
-						*/
-					})
-					.catch(error => {
-						console.log(error);
-					})
-			}
-			for(i in courselist) console.log(courselist[i].coursename);
-			var LIST = JSON.stringify(courselist);
-			res.send(LIST);
+			session
+				.run("match (c:Course) match (a:Author)-->(c) where c.idx in ["+idlist+"] return distinct c.idx AS `id`, c.Title AS `coursename`, a.author AS `professor`")
+				.then(result2 => {
+					var anoidlist = [];
+					var temp_i = 0;
+					result2.records.forEach(function (record) {
+						console.log(record.get('coursename')+" - "+record.get('professor'));
+						if(anoidlist.includes(record.get('id')){}
+						else{
+							anoidlist.push(record.get('id'));
+							courselist[temp_i].coursename = record.get('coursename');
+							courselist[temp_i].professor = record.get('professor');
+							temp_i++;
+						}
+					});
+					var LIST = JSON.stringify(courselist);
+					res.send(LIST);
+				})
+				.catch(error => {
+					console.log(error);
+				})
 		}
 	});
 });
