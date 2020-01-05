@@ -166,10 +166,10 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 			session
 				.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where c.idx in ["+idlist+"] return distinct c.Title AS `coursename`, a.author AS `professor`")
 				.then(result2 => {
-					console.log(result2.records[0].get('coursename'));
-					//obj.coursename = result2.records[0].get('coursename');
-					//obj.professor = result2.records[0].get('professor');
-					//courselist.push(obj);
+					result.records.forEach(function (record) {
+						console.log(record.get('coursename'));
+						console.log(record.get('professor'));
+					});
 				})
 				.catch(error => {
 					console.log(error);
