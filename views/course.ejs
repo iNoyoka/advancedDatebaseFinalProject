@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   </head>
   <% if(already==1 || already==2){ %>
-  <body onload="GetForum(<%= courseid %>, '<%= name %>' );SaveProfessor('<%= professor %>')">
+  <body onload="GetForum(<%= courseid %>, '<%= name %>' );SaveProfessor('<%= professorList %>')">
   <% }else{ %>
-  <body onload="SaveProfessor('<%= professor %>')">
+  <body onload="SaveProfessor('<%= professorList %>')">
   <% } %> 
     <div class="container">
       <div class="row nav">
@@ -84,7 +84,7 @@
 <script>
 var professorList = [];
 function SaveProfessor(list){
-	professorList = list;
+	professorList = JSON.parse(list);
 	var innerhtml = '<option value="0">choose a professor</option>';
 	for(i in professorList){
 		innerhtml += '<option value="'+i+'">'+professorList[i]+'</option>';
