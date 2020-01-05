@@ -68,7 +68,7 @@ router.get('/logout',function(req,res,next){
 router.post('/loginCheck',function(req,res,next){
   var id = req.body.id;
   var pwd = req.body.pwd;
-	con.query("SELECT * FROM `studentList` WHERE `studentid`="+id+" AND `studentpwd`="+pwd+"",function(err,result){
+	con.query("SELECT * FROM `studentList` WHERE `studentid`='"+id+"' AND `studentpwd`='"+pwd+"'",function(err,result){
 		if(err) console.log(err);
 		else{
 			if(result.lenth==0) res.send("Error Occur.");
@@ -84,12 +84,12 @@ router.post('/loginCheck',function(req,res,next){
 router.post('/registerCheck',function(req,res,next){
   var id = req.body.id;
   var pwd = req.body.pwd;
-	con.query("SELECT * FROM `studentList` WHERE `studentid`="+id+"",function(err,result){
+	con.query("SELECT * FROM `studentList` WHERE `studentid`='"+id+"'",function(err,result){
 		if(err) console.log(err);
 		else{
 			if(result.lenth==0){
 				req.session.name = id;
-				con.query("INSERT INTO `studentList` (`studentid`, `studentpwd`) VALUES ("+id+", "+pwd+")",function(err,result){
+				con.query("INSERT INTO `studentList` (`studentid`, `studentpwd`) VALUES ('"+id+"', '"+pwd+"')",function(err,result){
 					if(err) console.log(err);
 				});
 				res.send("Success.");
