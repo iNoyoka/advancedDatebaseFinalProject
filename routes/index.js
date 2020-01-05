@@ -168,8 +168,8 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 						obj.coursename = result2.records[0].get('coursename');
 						obj.professor = result2.records[0].get('professor');
 						courselist.push(obj);
+						session.close();
 					})
-					session.close();
 					.catch(error => {
 						console.log(error);
 					})
