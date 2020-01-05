@@ -250,30 +250,19 @@ router.get('/course/:courseid',function(req,res,next){
 router.post('/course/changePersonalCourse',function(req,res,next){
   var state = req.body.state;
   var courseid = req.body.courseid;
-  var studentid = req.session.name;
+	var sql = "";
   if(state=="take"){
-    for(i in studentList){
-      if(studentList[i].studentid==studentid){
-        if(studentList[i].studentcourse=="#"){
-          studentList[i].studentcourse += courseid + "#";
-        }else{
-          studentList[i].studentcourse += courseid + "#";
-        }
-      }
-    }
+    sql = "INSERT INTO `studentCourse` (`studentid`,`studentcourse_name`,`studentcourse_bool`) VALUES ('"+req.session.name+"','"+courseid+"',0)";
+		con.query(sql,function(err,result){
+			if(err) console.log(err);
+			else res.send("DONE");
+		});
   }else{
-    for(i in studentList){
-      if(studentList[i].studentid==studentid){
-        console.log(studentList[i].studentcourse);
-        var newlist = studentList[i].studentcourse.split("#");
-        studentList[i].studentcourse = "#";
-        for(j in newlist){
-          if(newlist[j]!=courseid && newlist[j]!=""){
-            studentList[i].studentcourse += newlist[j] + "#";
-          }
-        }
-      }
-    }
+    sql = "DELETE FROM `studentCourse` WHERE `studentid`='"+req.session.name+"' AND `studentcourse_name`='"+courseid+"'";
+		con.query(sql,function(err,result){
+			if(err) console.log(err);
+			else res.send("DONE");
+		});
   }
   res.send("DONE");
 });
