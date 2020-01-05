@@ -147,7 +147,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 		}else{
 			for(i in result){
 				var obj = {
-					corseid: result[i].studentcourse_name,
+					courseid: result[i].studentcourse_name,
 					coursename: "test",
 					professor: "test",
 					state: result[i].studentcourse_bool
