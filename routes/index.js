@@ -64,14 +64,13 @@ router.get('/logout',function(req,res,next){
   res.redirect('/');
 });
 
-// NOT
 router.post('/loginCheck',function(req,res,next){
   var id = req.body.id;
   var pwd = req.body.pwd;
 	con.query("SELECT * FROM `studentList` WHERE `studentid`='"+id+"' AND `studentpwd`='"+pwd+"'",function(err,result){
 		if(err) console.log(err);
 		else{
-			if(result.lenth==0) res.send("Error Occur.");
+			if(result.length==0) res.send("Error Occur.");
 			else{
 				req.session.name = id;
 				res.send("Account Exist.");
@@ -80,22 +79,19 @@ router.post('/loginCheck',function(req,res,next){
 	});
 });
 
-// NOT
 router.post('/registerCheck',function(req,res,next){
   var id = req.body.id;
   var pwd = req.body.pwd;
 	con.query("SELECT * FROM `studentList` WHERE `studentid`='"+id+"'",function(err,result){
 		if(err) console.log(err);
 		else{
-			console.log(result.length);
-			if(result.lenth==0){
+			if(result.length==0){
 				req.session.name = id;
 				con.query("INSERT INTO `studentList` (`studentid`, `studentpwd`) VALUES ('"+id+"', '"+pwd+"')",function(err,result){
 					if(err) console.log(err);
 				});
 				res.send("Success.");
-			}
-			else{
+			}else{
 				res.send("Account Exist.");
 			}
 		}
