@@ -6,7 +6,6 @@ var router = express.Router();
 
 var neo4j = require('neo4j-driver');
 const driver = new neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "as123512"));
-var session = driver.session();
 
 var mysql      = require('mysql');
 var con = mysql.createConnection({
@@ -123,6 +122,7 @@ router.post('/home/searchCourses',function(req,res,next){
   var keywords = req.body.keywords;
   var showlist = [];
 	//FIND KEYWORDS IN DB
+	var session = driver.session();
 	session
 		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) match (t:Topic) where t.Topic=~ '(?i).*"+keywords+".*' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS `school` ORDER BY toInteger(c.idx) ASC")
 		.then(result => {
@@ -136,6 +136,7 @@ router.post('/home/searchCourses',function(req,res,next){
 				showlist.push(obj);
 			});
 			var LIST = JSON.stringify(showlist);
+			session.close();
 			res.send(LIST);
 		})
 		.catch(error => {
@@ -160,6 +161,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 					professor: "test",
 					state: result[i].studentcourse_bool
 				}
+				var session = driver.session();
 				session
 					.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where c.idx=~ '(?i).*"+result[i].studentcourse_name+".*' return distinct c.Title AS `coursename`, a.author AS `professor`")
 					.then(result2 => {
@@ -167,6 +169,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 						obj.professor = result2.records[0].get('professor');
 						courselist.push(obj);
 					})
+					session.close();
 					.catch(error => {
 						console.log(error);
 					})
