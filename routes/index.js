@@ -273,6 +273,23 @@ router.post('/course/changePersonalCourse',function(req,res,next){
   }
 });
 
+router.post('/course/savetopic',function(req,res,next){
+	var courseid = req.body.courseid;
+	var showlist = [];
+	session
+		.run("match (Courses {idx:'"+courseid+"'})-[:BELONGS_TO_TOPIC]->(topics) return topics.Topic AS topic")
+		.then(result => {
+			result.records.forEach(function (record) {
+				showlist.push(record.get('topic'));
+			});
+			var LIST = JSON.stringify(showlist);
+			res.send(LIST);
+		})
+		.catch(error => {
+			console.log(error);
+		})
+});
+
 router.post('/course/callprofessor',function(req,res,next){
 	var professor = req.body.professor;
 	var showlist = [];
@@ -286,6 +303,32 @@ router.post('/course/callprofessor',function(req,res,next){
 					coursename: record.get('coursename'),
 					professor: record.get('professor'),
 					school: record.get('school')
+				}
+				if(idlist.includes(obj.courseid)){}
+				else{
+					idlist.push(obj.courseid);
+					showlist.push(obj);
+				}
+			});
+			var LIST = JSON.stringify(showlist);
+			res.send(LIST);
+		})
+		.catch(error => {
+			console.log(error);
+		})
+});
+
+router.post('/course/calltopic',function(req,res,next){
+	var topic = req.body.topic;
+	var showlist = [];
+	var idlist = [];
+	session
+		.run("match (Topic {Topic:'"+topic+"'})<-[:BELONGS_TO_TOPIC]-(course) return course.Title AS coursename, course.idx AS courseid")
+		.then(result => {
+			result.records.forEach(function (record) {
+				var obj = {
+					courseid: record.get('courseid'),
+					coursename: record.get('coursename')
 				}
 				if(idlist.includes(obj.courseid)){}
 				else{

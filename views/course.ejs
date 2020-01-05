@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   </head>
   <% if(already==1 || already==2){ %>
-  <body onload="GetForum(<%= courseid %>, '<%= name %>' );SaveProfessor('<%= professorList %>')">
+  <body onload="GetForum(<%= courseid %>, '<%= name %>' );SaveProfessor('<%= professorList %>');SaveTopic('<%= courseid %>');">
   <% }else{ %>
-  <body onload="SaveProfessor('<%= professorList %>')">
+  <body onload="SaveProfessor('<%= professorList %>');SaveTopic('<%= courseid %>');">
   <% } %> 
     <div class="container">
       <div class="row nav">
@@ -61,8 +61,11 @@
         </div>
         <div class="col-lg-4">
           <div class="relatedTitle">Relate Class</div>
-					<select style="width:100% !important;" id="relatedClass" onchange="CallProfessor()">
+					<select style="width:100% !important;" id="relatedClassP" onchange="CallProfessor()">
 						<option value="0">choose a professor</option>
+					</select>
+					<select style="width:100% !important;" id="relatedClassT" onchange="CallTopic()">
+						<option value="0">choose a topic</option>
 					</select>
 					<div id="coursesBlock"></div>
 					<!--
@@ -89,15 +92,51 @@ function SaveProfessor(list){
 	for(i in professorList){
 		innerhtml += '<option value="'+professorList[i]+'">'+professorList[i]+'</option>';
 	}
-	document.getElementById('relatedClass').innerHTML = innerhtml;
+	document.getElementById('relatedClassP').innerHTML = innerhtml;
+}
+function SaveTopic(courseid){
+	.ajax({
+		method: 'POST',
+		url: '/course/savetopic',
+		data:{
+			courseid: courseid
+		}
+	}).done(function(data){
+		var LIST = JSON.parse(data);
+		var innerhtml = '<option value="0">choose a topic</option>';
+		for(i in LIST){
+			innerhtml += '<option value="'+LIST[i]+'">'+LIST[i]+'</option>';
+		}
+		document.getElementById('relatedClassT').innerHTML = innerhtml;
+	});
 }
 function CallProfessor(){
-	if($('#relatedClass').val()!='0'){
+	if($('#relatedClassP').val()!='0'){
+		$('#relatedClassT').val('0');
 		$.ajax({
 			method: 'POST',
 			url: '/course/callprofessor',
 			data:{
-				professor: $('#relatedClass').val()
+				professor: $('#relatedClassP').val()
+			}
+		}).done(function(data){
+			var LIST = JSON.parse(data);
+      var innerhtml = "";
+      for(i in LIST){
+				innerhtml += '<div class="relatedCourse" onclick="VisitCourse(\''+LIST[i].courseid+'\')">'+LIST[i].coursename+'</div>';
+      }
+      document.getElementById("coursesBlock").innerHTML = innerhtml;
+		});
+	}
+}
+function CallTopic(){
+	if($('#relatedClassT').val()!='0'){
+		$('#relatedClassP').val('0');
+		$.ajax({
+			method: 'POST',
+			url: '/course/calltopic',
+			data:{
+				topic: $('#relatedClassT').val()
 			}
 		}).done(function(data){
 			var LIST = JSON.parse(data);
