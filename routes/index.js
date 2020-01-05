@@ -101,13 +101,13 @@ router.post('/registerCheck',function(req,res,next){
 //================================================
 // HOME
 //================================================
-// DONE
 router.get('/home', function(req, res, next) {
+	if(req.session.name==null) res.redirect('/');
   res.render('home',{name: req.session.name});
 });
 
-// DONE
 router.get('/home/personalPage',function(req,res,next){
+	if(req.session.name==null) res.redirect('/');
   res.render('personalPage',{name: req.session.name});
   
 });
@@ -187,6 +187,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 //================================================
 // NOT
 router.get('/course/:courseid',function(req,res,next){
+	if(req.session.name==null) res.redirect('/');
   var courseid = decodeURI(req.params.courseid);
 	//
   for(i in courseList){
