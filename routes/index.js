@@ -116,9 +116,9 @@ router.post('/home/searchCourses',function(req,res,next){
   var keywords = req.body.keywords;
   var showlist = [];
 	//FIND KEYWORDS IN DB
-	/* NEW VERSION
+	
 	session
-		.run()//find courseid coursename professor school
+		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) match (t:Topic) where t.Topic=~ '(?i).*"+keywords+".*' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS 'school' ORDER BY toInteger(c.idx) ASC")
 		.then(result => {
 			result.records.forEach(function (record) {
 				var obj = {
@@ -136,7 +136,6 @@ router.post('/home/searchCourses',function(req,res,next){
 		.catch(error => {
 			console.log(error);
 		})
-	*/
 });
 
 router.post('/home/listPersonalCourse',function(req,res,next){
