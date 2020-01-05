@@ -273,7 +273,7 @@ router.post('/course/changePersonalCourse',function(req,res,next){
   }
 });
 
-router.post('',function(req,res,next){
+router.post('/course/callprofessor',function(req,res,next){
 	var professor = req.body.professor;
 	var showlist = [];
 	session
