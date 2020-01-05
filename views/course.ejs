@@ -28,15 +28,21 @@
       </div>
       <hr>
       <div class="row courseTitle">
-        <div class="col-lg-12 text-center"><%= coursename %> - <%= professor %></div>
+        <div class="col-lg-12 text-center"><%= coursename %></div>
       </div>
       <div class="row fixWidth">
+				<div class="col-lg-6">
+					<p>professor: <%= professor %></p>
+					<p>school: <%= school %></p>
+					<p>language: <%= language %></p>
+					<p>link: <a href="<%= link %>"><%= link %></a></p>
+				</div>
 				<% if(already==2){ %>
-				<div class="col-lg-12 text-right"><button type="button" class="btn btn-secondary">Already Finish This Class</button></div>
+				<div class="col-lg-6 text-right"><button type="button" class="btn btn-secondary">Already Finish This Class</button></div>
         <% }else if(already==1){ %>
-        <div class="col-lg-12 text-right"><button type="button" class="btn btn-danger" onclick="ChangePersonalCourse('drop',<%=courseid%>)">Drop This Course</button></div>
+        <div class="col-lg-6 text-right"><button type="button" class="btn btn-danger" onclick="ChangePersonalCourse('drop',<%=courseid%>)">Drop This Course</button></div>
         <% }else{ %>
-        <div class="col-lg-12 text-right"><button type="button" class="btn btn-success" onclick="ChangePersonalCourse('take',<%=courseid%>)">Take This Course</button></div>
+        <div class="col-lg-6 text-right"><button type="button" class="btn btn-success" onclick="ChangePersonalCourse('take',<%=courseid%>)">Take This Course</button></div>
         <% } %>
       </div>
       <div class="row fixWidth">
