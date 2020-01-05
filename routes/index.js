@@ -61,48 +61,44 @@ router.get('/', function(req, res, next) {
 
 router.get('/logout',function(req,res,next){
   req.session.destroy();
-  res.render('index');
+  res.redirect('/');
 });
 
 // NOT
 router.post('/loginCheck',function(req,res,next){
   var id = req.body.id;
   var pwd = req.body.pwd;
-  var err = 0;
-  for(i in studentList){
-    if(studentList[i].studentid==id && studentList[i].studentpwd==pwd){
-      err = 1;
-      req.session.name = studentList[i].studentid;
-      res.send("Account Exist.");
-      break;
-    }
-  }
-  if(err==0) res.send("Error Occur.");
+	con.query("SELECT * FROM `studentList` WHERE `studentid`="+id+" AND `studentpwd`="+pwd+"",function(err,result){
+		if(err) console.log(err);
+		else{
+			if(result.lenth==0) res.send("Error Occur.");
+			else{
+				req.session.name = id;
+				res.send("Account Exist.");
+			}
+		}
+	});
 });
 
 // NOT
 router.post('/registerCheck',function(req,res,next){
   var id = req.body.id;
   var pwd = req.body.pwd;
-  var err = 0;
-  for(i in studentList){
-    if(studentList[i].studentid==id){
-      err = 1;
-      res.send("Account Exist.");
-      break;
-    }
-  }
-  if(err==0){
-    var obj = {
-      studentid: id,
-      studentpwd: pwd,
-      studentcourse: "#"
-    }
-    studentList.push(obj);
-    // login
-    req.session.name = id;
-    res.send("Success.");
-  }
+	con.query("SELECT * FROM `studentList` WHERE `studentid`="+id+"",function(err,result){
+		if(err) console.log(err);
+		else{
+			if(result.lenth==0){
+				req.session.name = id;
+				con.query("INSERT INTO `studentList` (`studentid`, `studentpwd`) VALUES ("+id+", "+pwd+")",function(err,result){
+					if(err) console.log(err);
+				}
+				res.send("Success.");
+			}
+			else{
+				res.send("Account Exist.");
+			}
+		}
+	});
 });
 
 //================================================
