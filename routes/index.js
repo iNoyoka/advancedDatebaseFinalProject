@@ -87,6 +87,7 @@ router.post('/registerCheck',function(req,res,next){
 	con.query("SELECT * FROM `studentList` WHERE `studentid`='"+id+"'",function(err,result){
 		if(err) console.log(err);
 		else{
+			console.log(result.length);
 			if(result.lenth==0){
 				req.session.name = id;
 				con.query("INSERT INTO `studentList` (`studentid`, `studentpwd`) VALUES ('"+id+"', '"+pwd+"')",function(err,result){
