@@ -6,7 +6,8 @@ var router = express.Router();
 
 var neo4j = require('neo4j-driver');
 const driver = new neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "as123512"));
-var session = driver.session();
+var tx = driver.session();
+var session = tx.beginTransaction();
 
 var mysql      = require('mysql');
 var con = mysql.createConnection({
