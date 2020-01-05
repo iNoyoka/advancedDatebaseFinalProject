@@ -189,35 +189,61 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 router.get('/course/:courseid',function(req,res,next){
 	if(req.session.name==null) res.redirect('/');
   var courseid = decodeURI(req.params.courseid);
-	//
-  for(i in courseList){
-    if(courseList[i].courseid==courseid){
-      for(j in studentList){
-        if(studentList[j].studentid==req.session.name){
-          if(studentList[j].studentcourse.includes(courseid)){
-            res.render('course',{
-              coursename: courseList[i].coursename,
-              professor: courseList[i].professor,
+	session
+		.run("match (c:Course) match (c) --> (l:Language) match (c) --> (p:Provider) match (a:Author) --> (c) where c.idx='"+courseid+"' return c.Title as `coursename`, c.DirectLink as `link`, l.Language as `language`, a.author AS `professor`, p.Provider AS `school`")
+		.then(result => {
+			var getcoursename = result.records[0].get('coursename');
+			var getlink = result.records[0].get('link');
+			var getlanguage = result.records[0].get('language');
+			var getprofessor = []
+			var getschool = result.records[0].get('school');
+			result.records.forEach(function (record) {
+				getprofessor.push(record.get('professor'));
+			});
+			var sql = "SELECT * FROM `studentCourse` WHERE `studentcourse_name`='"+courseid+"' AND `studentid`='"+req.session.name+"'";
+			con.query(sql,function(err,result2){
+				if(err) console.log(err);
+				else{
+					if(result2.length==0){
+						res.render('course',{
+              coursename: getcoursename,
+							link: getlink,
+							language: getlanguage,
+              professor: getprofessor,
               name: req.session.name,
-              courseid: courseList[i].courseid,
-              already: 1
-            });
-          }else{
-            res.render('course',{
-              coursename: courseList[i].coursename,
-              professor: courseList[i].professor,
-              name: req.session.name,
-              courseid: courseList[i].courseid,
+              courseid: courseid,
+							school: getschool,
               already: 0
             });
-          }
-          break;
-        }
-      }
-      break;
-    }
-  }
-	//
+					}else if(result2.length!=0 && result2[0].studentcourse_bool==0){
+						res.render('course',{
+              coursename: getcoursename,
+							link: getlink,
+							language: getlanguage,
+              professor: getprofessor,
+              name: req.session.name,
+              courseid: courseid,
+							school: getschool,
+              already: 1
+            });
+					}else if(result2.length!=0 && result2[0].studentcourse_bool==1){
+						res.render('course',{
+              coursename: getcoursename,
+							link: getlink,
+							language: getlanguage,
+              professor: getprofessor,
+              name: req.session.name,
+              courseid: courseid,
+							school: getschool,
+              already: 2
+            });
+					}
+				}
+			});
+		})
+		.catch(error => {
+			console.log(error);
+		})
 });
 
 // NOT
