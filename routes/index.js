@@ -179,6 +179,7 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 						console.log(error);
 					})
 			}
+			for(i in courselist) console.log(courselist[i].coursename);
 			var LIST = JSON.stringify(courselist);
 			res.send(LIST);
 		}
