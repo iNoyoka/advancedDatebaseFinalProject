@@ -254,7 +254,6 @@ router.get('/course/:courseid',function(req,res,next){
 		})
 });
 
-// NOT
 router.post('/course/changePersonalCourse',function(req,res,next){
   var state = req.body.state;
   var courseid = req.body.courseid;
@@ -272,6 +271,33 @@ router.post('/course/changePersonalCourse',function(req,res,next){
 			else res.send("DONE");
 		});
   }
+});
+
+router.post('',function(req,res,next){
+	var professor = req.body.professor;
+	var showlist = [];
+	session
+		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where a.author='"+professor+"' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS `school` ORDER BY toInteger(c.idx) ASC")
+		.then(result => {
+			result.records.forEach(function (record) {
+				var obj = {
+					courseid: record.get('courseid'),
+					coursename: record.get('coursename'),
+					professor: record.get('professor'),
+					school: record.get('school')
+				}
+				if(idlist.includes(obj.courseid)){}
+				else{
+					idlist.push(obj.courseid);
+					showlist.push(obj);
+				}
+			});
+			var LIST = JSON.stringify(showlist);
+			res.send(LIST);
+		})
+		.catch(error => {
+			console.log(error);
+		})
 });
 
 //================================================

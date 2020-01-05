@@ -65,6 +65,7 @@
 						<option value="0">choose a professor</option>
 					</select>
 					</div>
+					<div id="coursesBlock"></div>
 					<!--
           <div class="relatedCourse">Here will put related class</div>
           <div class="relatedCourse">Here will put related class</div>
@@ -93,10 +94,25 @@ function SaveProfessor(list){
 }
 function CallProfessor(){
 	if($('#relatedClass').val()!='0'){
-		alert("CALL!");
-	}else{
-		alert("NO!");
+		$.ajax({
+			method: 'POST',
+			url: '/course/callprofessor',
+			data:{
+				professor: $('#relatedClass').val()
+			}
+		}).done(function(data){
+			var LIST = JSON.parse(data);
+      var innerhtml = "";
+      for(i in LIST){
+				innerhtml += '<div class="relatedCourse" onclick="VisitCourse(\''+LIST[i].courseid+'\')">'+LIST[i].coursename+'</div>';
+      }
+      document.getElementById("coursesBlock").innerHTML = innerhtml;
+		});
 	}
+}
+function VisitCourse(id){
+  var courseid = encodeURI(id);
+  window.location.href = "/course/"+courseid;
 }
 function ChangePersonalCourse(state,courseid){
   $.ajax({
