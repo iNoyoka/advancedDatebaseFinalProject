@@ -145,7 +145,7 @@ router.post('/home/searchCourses',function(req,res,next){
 
 // ALMOST DONE
 router.post('/home/listPersonalCourse',function(req,res,next){
-  var showlist = [];
+  var idlist = [];
 	var courselist = [];
 	
 	var sql = "SELECT * FROM `studentCourse` WHERE `studentid`='"+req.session.name+"'";
@@ -160,18 +160,20 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 					professor: "test",
 					state: result[i].studentcourse_bool
 				}
-				session
-					.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where c.idx=~ '(?i).*"+result[i].studentcourse_name+".*' return distinct c.Title AS `coursename`, a.author AS `professor`")
-					.then(result2 => {
-						obj.coursename = result2.records[0].get('coursename');
-						obj.professor = result2.records[0].get('professor');
-						courselist.push(obj);
-					})
-					.catch(error => {
-						console.log(error);
-					})
-				
+				courselist.push(obj);
+				idlist.push(result[i].studentcourse_name);
 			}
+			session
+				.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where c.idx in "+idlist+" return distinct c.Title AS `coursename`, a.author AS `professor`")
+				.then(result2 => {
+					console.log(result2.records[0].get('coursename'));
+					//obj.coursename = result2.records[0].get('coursename');
+					//obj.professor = result2.records[0].get('professor');
+					//courselist.push(obj);
+				})
+				.catch(error => {
+					console.log(error);
+				})
 			var LIST = JSON.stringify(courselist);
 			res.send(LIST);
 		}
