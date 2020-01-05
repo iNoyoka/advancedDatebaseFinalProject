@@ -264,7 +264,6 @@ router.post('/course/changePersonalCourse',function(req,res,next){
 			else res.send("DONE");
 		});
   }
-  res.send("DONE");
 });
 
 //================================================
