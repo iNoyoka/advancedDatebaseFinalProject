@@ -146,7 +146,6 @@ router.post('/home/searchCourses',function(req,res,next){
 
 // ALMOST DONE
 router.post('/home/listPersonalCourse',function(req,res,next){
-  var idlist = [];
 	var courselist = [];
 	
 	var sql = "SELECT * FROM `studentCourse` WHERE `studentid`='"+req.session.name+"'";
@@ -156,22 +155,19 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 		}else{
 			for(i in result){
 				var obj = {
-					courseid: ""+result[i].studentcourse_name+"",
+					courseid: result[i].studentcourse_name,
 					coursename: "test",
 					professor: "test",
 					state: result[i].studentcourse_bool
 				}
 				courselist.push(obj);
-				idlist.push(result[i].studentcourse_name);
 			}
-			for(i in idlist){
+			for(i in courselist){
 				session
-					.run("match (c:Course) match (a:Author)-->(c) where c.idx = '"+idlist[i]+"' return distinct c.Title AS `coursename`, a.author AS `professor`")
+					.run("match (c:Course) match (a:Author)-->(c) where c.idx = '"+courselist[i].studentcourse_name+"' return distinct c.Title AS `coursename`, a.author AS `professor`")
 					.then(result2 => {
-						result2.records.forEach(function (record) {
-							console.log(record.get('coursename'));
-							console.log(record.get('professor'));
-						});
+						courselist[i].coursename = result2.records[0].get('coursename');
+						courselist[i].professor = result2.records[0].get('professor');
 					})
 					.catch(error => {
 						console.log(error);
