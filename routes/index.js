@@ -6,7 +6,6 @@ var router = express.Router();
 
 var neo4j = require('neo4j-driver');
 const driver = new neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "as123512"));
-var session = driver.session();
 
 var mysql      = require('mysql');
 var con = mysql.createConnection({
@@ -116,7 +115,7 @@ router.post('/home/searchCourses',function(req,res,next){
   var keywords = req.body.keywords;
   var showlist = [];
 	//FIND KEYWORDS IN DB
-	
+	var session = driver.session();
 	session
 		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) match (t:Topic) where t.Topic=~ '(?i).*"+keywords+".*' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS `school` ORDER BY toInteger(c.idx) ASC")
 		.then(result => {
