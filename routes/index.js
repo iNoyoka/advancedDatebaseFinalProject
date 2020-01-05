@@ -163,17 +163,19 @@ router.post('/home/listPersonalCourse',function(req,res,next){
 				courselist.push(obj);
 				idlist.push(result[i].studentcourse_name);
 			}
-			session
-				.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where c.idx in ["+idlist+"] return distinct c.Title AS `coursename`, a.author AS `professor`")
-				.then(result2 => {
-					result2.records.forEach(function (record) {
-						console.log(record.get('coursename'));
-						console.log(record.get('professor'));
-					});
-				})
-				.catch(error => {
-					console.log(error);
-				})
+			for(i in idlist){
+				session
+					.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) where c.idx = "+idlist[i]+" return distinct c.Title AS `coursename`, a.author AS `professor`")
+					.then(result2 => {
+						result2.records.forEach(function (record) {
+							console.log(record.get('coursename'));
+							console.log(record.get('professor'));
+						});
+					})
+					.catch(error => {
+						console.log(error);
+					})
+			}
 			var LIST = JSON.stringify(courselist);
 			res.send(LIST);
 		}
