@@ -50,7 +50,11 @@ function GetCourse(){
         innerhtml += '<div class="col-lg-2 text-center">'+LIST[i].courseid+'</div>';
         innerhtml += '<div class="col-lg-4 text-center">'+LIST[i].coursename+'</div>';
         innerhtml += '<div class="col-lg-3 text-center">'+LIST[i].professor+'</div>';
-        innerhtml += '<div class="col-lg-3 text-center">'+LIST[i].state+'</div>';
+        if(LIST[i].state == 0){
+					innerhtml += '<div class="col-lg-3 text-center">Studying</div>';
+				}else{
+					innerhtml += '<div class="col-lg-3 text-center">Finish</div>';
+				}
         innerhtml += '</div>';
       }
       document.getElementById("coursesBlock").innerHTML = innerhtml;
