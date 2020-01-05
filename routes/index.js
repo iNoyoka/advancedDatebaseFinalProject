@@ -128,7 +128,7 @@ router.post('/home/searchCourses',function(req,res,next){
 					professor: record.get('professor'),
 					school: record.get('school')
 				}
-				if(idlist.includes(obj.courseid){}
+				if(idlist.includes(obj.courseid)){}
 				else{
 					idlist.push(obj.courseid);
 					showlist.push(obj);
