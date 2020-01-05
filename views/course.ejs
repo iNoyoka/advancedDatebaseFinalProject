@@ -95,7 +95,7 @@ function SaveProfessor(list){
 	document.getElementById('relatedClassP').innerHTML = innerhtml;
 }
 function SaveTopic(courseid){
-	.ajax({
+	$.ajax({
 		method: 'POST',
 		url: '/course/savetopic',
 		data:{
