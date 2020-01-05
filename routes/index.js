@@ -118,7 +118,7 @@ router.post('/home/searchCourses',function(req,res,next){
 	//FIND KEYWORDS IN DB
 	
 	session
-		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) match (t:Topic) where t.Topic=~ '(?i).*"+keywords+".*' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS 'school' ORDER BY toInteger(c.idx) ASC")
+		.run("match (c:Course) match (c)-->(p:Provider) match (a:Author)-->(c) match (t:Topic) where t.Topic=~ '(?i).*"+keywords+".*' return distinct c.idx AS `courseid`, c.Title AS `coursename`, a.author AS `professor`, p.Provider AS `school` ORDER BY toInteger(c.idx) ASC")
 		.then(result => {
 			result.records.forEach(function (record) {
 				var obj = {
